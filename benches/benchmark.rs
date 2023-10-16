@@ -1,10 +1,10 @@
 #[macro_use]
 extern crate criterion;
-extern crate mime_guess2;
+extern crate mime_infer;
 
 use self::criterion::Criterion;
 
-use mime_guess2::from_ext;
+use mime_infer::from_ext;
 
 include!("../src/mime_types.rs");
 

@@ -1,13 +1,13 @@
 [package]
 
-name = "mime_guess2"
+name = "mime-infer"
 version = "2.0.5"
 authors = ["Austin Bonander <austin.bonander@gmail.com>"]
 license = "MIT"
 description = "A simple crate for detection of a file's MIME type by its extension."
 keywords = ["mime", "filesystem", "extension"]
-repository = "https://github.com/ttys3/mime_guess2"
-documentation = "https://docs.rs/mime_guess2/"
+repository = "https://github.com/salvo-rs/mime-infer"
+documentation = "https://docs.rs/mime-infer/"
 readme = "README.md"
 
 [features]
@@ -21,7 +21,7 @@ rev-mappings = []
 
 [dependencies]
 mime = "0.3"
-unicase = "2.4.0"
+unicase = "2.7"
 
 #[dependencies.phf]
 ## version = "0.7.24"
@@ -40,7 +40,7 @@ unicase = "2.4.0"
 #optional = true
 
 [dev-dependencies]
-criterion = "0.3"
+criterion = "0.5"
 
 [[example]]
 name = "rev_map"

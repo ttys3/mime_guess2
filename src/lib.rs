@@ -5,7 +5,7 @@
 //! ```
 //! # extern crate mime;
 //! // the file doesn't have to exist, it just looks at the path
-//! let guess = mime_guess2::from_path("some_file.gif");
+//! let guess = mime_infer::from_path("some_file.gif");
 //! assert_eq!(guess.first(), Some(mime::IMAGE_GIF));
 //!
 //! ```

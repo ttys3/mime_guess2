@@ -1,4 +1,4 @@
-# mime_guess2 ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/ttys3/mime_guess2/rust.yml?branch=main) [![Crates.io](https://img.shields.io/crates/v/mime_guess2.svg)](https://crates.io/crates/mime_guess2)
+# mime_infer ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/salvo-rs/mime_infer/rust.yml?branch=main) [![Crates.io](https://img.shields.io/crates/v/mime-infer.svg)](https://crates.io/crates/mime-infer)
 
 MIME/MediaType guessing by file extension. 
 Uses a static map of known file extension -> MIME type mappings.
@@ -7,15 +7,15 @@ Uses a static map of known file extension -> MIME type mappings.
 
 ##### Required Rust Version: 1.33
 
-#### [Documentation](https://docs.rs/mime_guess2/)
+#### [Documentation](https://docs.rs/mime-infer/)
 
 ### Versioning
 
-Due to a mistaken premature release, `mime_guess2` currently publicly depends on a pre-1.0 `mime`,
+Due to a mistaken premature release, `mime_infer` currently publicly depends on a pre-1.0 `mime`,
 which means `mime` upgrades are breaking changes and necessitate a major version bump. 
-Refer to the following table to find a version of `mime_guess2` which matches your version of `mime`:
+Refer to the following table to find a version of `mime_infer` which matches your version of `mime`:
 
-| `mime` version | `mime_guess2` version |
+| `mime` version | `mime_infer` version |
 |----------------|----------------------|
 | `0.1.x, 0.2.x` | `1.x.y` |
 | `0.3.x`        | `2.x.y` |
