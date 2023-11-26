@@ -1,6 +1,6 @@
 # mime_infer ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/salvo-rs/mime_infer/rust.yml?branch=main) [![Crates.io](https://img.shields.io/crates/v/mime-infer.svg)](https://crates.io/crates/mime-infer)
 
-MIME/MediaType guessing by file extension. 
+MIME/MediaType infering by file extension. 
 Uses a static map of known file extension -> MIME type mappings.
 
 **Returning Contributors: New Requirements for Submissions Below**
@@ -25,7 +25,7 @@ The media types returned for a given extension are not considered to be part of 
  stable API and are often updated in patch (`x.y.z + 1`) releases to be as correct as possible. MIME
  changes are backported to previous major releases on a best-effort basis.
  
-Note that only the extensions of paths/filenames are inspected in order to guess the MIME type. The
+Note that only the extensions of paths/filenames are inspected in order to infer the MIME type. The
 file that may or may not reside at that path may or may not be a valid file of the returned MIME type.
 Be wary of unsafe or un-validated assumptions about file structure or length.
 
@@ -55,7 +55,7 @@ When opening a pull request, please include a link to an official document or RF
 the correct MIME type for the file type in question **in the commit message** so
 that the commit history can be used as an audit trail.
 
-Though we're only guessing here, we like to be as correct as we can. 
+Though we're only infering here, we like to be as correct as we can. 
 It makes it much easier to vet your contribution if we don't have to search for corroborating material.
 
 #### Multiple MIME types per extension

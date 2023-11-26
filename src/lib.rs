@@ -1,12 +1,12 @@
-//! Guessing of MIME types by file extension.
+//! Infering of MIME types by file extension.
 //!
 //! Uses a static list of file-extension : MIME type mappings.
 //!
 //! ```
 //! # extern crate mime;
 //! // the file doesn't have to exist, it just looks at the path
-//! let guess = mime_infer::from_path("some_file.gif");
-//! assert_eq!(guess.first(), Some(mime::IMAGE_GIF));
+//! let infer = mime_infer::from_path("some_file.gif");
+//! assert_eq!(infer.first(), Some(mime::IMAGE_GIF));
 //!
 //! ```
 //!
@@ -15,7 +15,7 @@
 //! stable API and are often updated in patch <br /> (`x.y.[z + 1]`) releases to be as correct as
 //! possible.
 //!
-//! Additionally, only the extensions of paths/filenames are inspected in order to guess the MIME
+//! Additionally, only the extensions of paths/filenames are inspected in order to infer the MIME
 //! type. The file that may or may not reside at that path may or may not be a valid file of the
 //! returned MIME type.  Be wary of unsafe or un-validated assumptions about file structure or
 //! length.
@@ -37,7 +37,7 @@ mod impl_;
 #[path = "impl_bin_search.rs"]
 mod impl_;
 
-/// A "guess" of the MIME/Media Type(s) of an extension or path as one or more
+/// A "infer" of the MIME/Media Type(s) of an extension or path as one or more
 /// [`Mime`](struct.Mime.html) instances.
 ///
 /// ### Note: Ordering
@@ -47,74 +47,74 @@ mod impl_;
 /// Ordering of additional Media Types is arbitrary.
 ///
 /// ### Note: Values Not Stable
-/// The exact Media Types returned in any given guess are not considered to be stable and are often
+/// The exact Media Types returned in any given infer are not considered to be stable and are often
 /// updated in patch releases in order to reflect the most up-to-date information possible.
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 // FIXME: change repr when `mime` gains macro/const fn constructor
-pub struct MimeGuess(&'static [&'static str]);
+pub struct MimeInfer(&'static [&'static str]);
 
-impl MimeGuess {
-    /// Guess the MIME type of a file (real or otherwise) with the given extension.
+impl MimeInfer {
+    /// Infer the MIME type of a file (real or otherwise) with the given extension.
     ///
     /// The search is case-insensitive.
     ///
-    /// If `ext` is empty or has no (currently) known MIME type mapping, then an empty guess is
+    /// If `ext` is empty or has no (currently) known MIME type mapping, then an empty infer is
     /// returned.
-    pub fn from_ext(ext: &str) -> MimeGuess {
+    pub fn from_ext(ext: &str) -> MimeInfer {
         if ext.is_empty() {
-            return MimeGuess(&[]);
+            return MimeInfer(&[]);
         }
 
-        impl_::get_mime_types(ext).map_or(MimeGuess(&[]), |v| MimeGuess(v))
+        impl_::get_mime_types(ext).map_or(MimeInfer(&[]), |v| MimeInfer(v))
     }
 
-    /// Guess the MIME type of `path` by its extension (as defined by
+    /// Infer the MIME type of `path` by its extension (as defined by
     /// [`Path::extension()`]). **No disk access is performed.**
     ///
     /// If `path` has no extension, the extension cannot be converted to `str`, or has
-    /// no known MIME type mapping, then an empty guess is returned.
+    /// no known MIME type mapping, then an empty infer is returned.
     ///
     /// The search is case-insensitive.
     ///
     /// ## Note
-    /// **Guess** is the operative word here, as there are no guarantees that the contents of the
+    /// **Infer** is the operative word here, as there are no guarantees that the contents of the
     /// file that `path` points to match the MIME type associated with the path's extension.
     ///
     /// Take care when processing files with assumptions based on the return value of this function.
     ///
     /// [`Path::extension()`]: https://doc.rust-lang.org/std/path/struct.Path.html#method.extension
-    pub fn from_path<P: AsRef<Path>>(path: P) -> MimeGuess {
+    pub fn from_path<P: AsRef<Path>>(path: P) -> MimeInfer {
         path.as_ref()
             .extension()
             .and_then(OsStr::to_str)
-            .map_or(MimeGuess(&[]), Self::from_ext)
+            .map_or(MimeInfer(&[]), Self::from_ext)
     }
 
-    /// `true` if the guess did not return any known mappings for the given path or extension.
+    /// `true` if the infer did not return any known mappings for the given path or extension.
     pub fn is_empty(&self) -> bool {
         self.0.is_empty()
     }
 
-    /// Get the number of MIME types in the current guess.
+    /// Get the number of MIME types in the current infer.
     pub fn count(&self) -> usize {
         self.0.len()
     }
 
-    /// Get the first guessed `Mime`, if applicable.
+    /// Get the first infered `Mime`, if applicable.
     ///
     /// See [Note: Ordering](#note-ordering) above.
     pub fn first(&self) -> Option<Mime> {
         self.first_raw().map(expect_mime)
     }
 
-    /// Get the first guessed Media Type as a string, if applicable.
+    /// Get the first infered Media Type as a string, if applicable.
     ///
     /// See [Note: Ordering](#note-ordering) above.
     pub fn first_raw(&self) -> Option<&'static str> {
         self.0.get(0).cloned()
     }
 
-    /// Get the first guessed `Mime`, or if the guess is empty, return
+    /// Get the first infered `Mime`, or if the infer is empty, return
     /// [`application/octet-stream`] instead.
     ///
     /// See [Note: Ordering](#note-ordering) above.
@@ -136,7 +136,7 @@ impl MimeGuess {
         self.first_or(mime::APPLICATION_OCTET_STREAM)
     }
 
-    /// Get the first guessed `Mime`, or if the guess is empty, return
+    /// Get the first infered `Mime`, or if the infer is empty, return
     /// [`text/plain`](::mime::TEXT_PLAIN) instead.
     ///
     /// See [Note: Ordering](#note-ordering) above.
@@ -144,14 +144,14 @@ impl MimeGuess {
         self.first_or(mime::TEXT_PLAIN)
     }
 
-    /// Get the first guessed `Mime`, or if the guess is empty, return the given `Mime` instead.
+    /// Get the first infered `Mime`, or if the infer is empty, return the given `Mime` instead.
     ///
     /// See [Note: Ordering](#note-ordering) above.
     pub fn first_or(&self, default: Mime) -> Mime {
         self.first().unwrap_or(default)
     }
 
-    /// Get the first guessed `Mime`, or if the guess is empty, execute the closure and return its
+    /// Get the first infered `Mime`, or if the infer is empty, execute the closure and return its
     /// result.
     ///
     /// See [Note: Ordering](#note-ordering) above.
@@ -162,14 +162,14 @@ impl MimeGuess {
         self.first().unwrap_or_else(default_fn)
     }
 
-    /// Get an iterator over the `Mime` values contained in this guess.
+    /// Get an iterator over the `Mime` values contained in this infer.
     ///
     /// See [Note: Ordering](#note-ordering) above.
     pub fn iter(&self) -> Iter {
         Iter(self.iter_raw().map(expect_mime))
     }
 
-    /// Get an iterator over the raw media-type strings in this guess.
+    /// Get an iterator over the raw media-type strings in this infer.
     ///
     /// See [Note: Ordering](#note-ordering) above.
     pub fn iter_raw(&self) -> IterRaw {
@@ -177,7 +177,7 @@ impl MimeGuess {
     }
 }
 
-impl IntoIterator for MimeGuess {
+impl IntoIterator for MimeInfer {
     type Item = Mime;
     type IntoIter = Iter;
 
@@ -186,7 +186,7 @@ impl IntoIterator for MimeGuess {
     }
 }
 
-impl<'a> IntoIterator for &'a MimeGuess {
+impl<'a> IntoIterator for &'a MimeInfer {
     type Item = Mime;
     type IntoIter = Iter;
 
@@ -195,9 +195,9 @@ impl<'a> IntoIterator for &'a MimeGuess {
     }
 }
 
-/// An iterator over the `Mime` types of a `MimeGuess`.
+/// An iterator over the `Mime` types of a `MimeInfer`.
 ///
-/// See [Note: Ordering on `MimeGuess`](struct.MimeGuess.html#note-ordering).
+/// See [Note: Ordering on `MimeInfer`](struct.MimeInfer.html#note-ordering).
 #[derive(Clone, Debug)]
 pub struct Iter(iter::Map<IterRaw, fn(&'static str) -> Mime>);
 
@@ -227,9 +227,9 @@ impl ExactSizeIterator for Iter {
     }
 }
 
-/// An iterator over the raw media type strings of a `MimeGuess`.
+/// An iterator over the raw media type strings of a `MimeInfer`.
 ///
-/// See [Note: Ordering on `MimeGuess`](struct.MimeGuess.html#note-ordering).
+/// See [Note: Ordering on `MimeInfer`](struct.MimeInfer.html#note-ordering).
 #[derive(Clone, Debug)]
 pub struct IterRaw(iter::Cloned<slice::Iter<'static, &'static str>>);
 
@@ -265,23 +265,23 @@ fn expect_mime(s: &str) -> Mime {
         .unwrap_or_else(|e| panic!("failed to parse media-type {:?}: {}", s, e))
 }
 
-/// Wrapper of [`MimeGuess::from_ext()`](struct.MimeGuess.html#method.from_ext).
-pub fn from_ext(ext: &str) -> MimeGuess {
-    MimeGuess::from_ext(ext)
+/// Wrapper of [`MimeInfer::from_ext()`](struct.MimeInfer.html#method.from_ext).
+pub fn from_ext(ext: &str) -> MimeInfer {
+    MimeInfer::from_ext(ext)
 }
 
-/// Wrapper of [`MimeGuess::from_path()`](struct.MimeGuess.html#method.from_path).
-pub fn from_path<P: AsRef<Path>>(path: P) -> MimeGuess {
-    MimeGuess::from_path(path)
+/// Wrapper of [`MimeInfer::from_path()`](struct.MimeInfer.html#method.from_path).
+pub fn from_path<P: AsRef<Path>>(path: P) -> MimeInfer {
+    MimeInfer::from_path(path)
 }
 
-/// Guess the MIME type of `path` by its extension (as defined by `Path::extension()`).
+/// Infer the MIME type of `path` by its extension (as defined by `Path::extension()`).
 ///
 /// If `path` has no extension, or its extension has no known MIME type mapping,
 /// then the MIME type is assumed to be `application/octet-stream`.
 ///
 /// ## Note
-/// **Guess** is the operative word here, as there are no guarantees that the contents of the file
+/// **Infer** is the operative word here, as there are no guarantees that the contents of the file
 /// that `path` points to match the MIME type associated with the path's extension.
 ///
 /// Take care when processing files with assumptions based on the return value of this function.
@@ -294,27 +294,27 @@ pub fn from_path<P: AsRef<Path>>(path: P) -> MimeGuess {
     since = "2.0.0",
     note = "Use `from_path(path).first_or_octet_stream()` instead"
 )]
-pub fn guess_mime_type<P: AsRef<Path>>(path: P) -> Mime {
+pub fn infer_mime_type<P: AsRef<Path>>(path: P) -> Mime {
     from_path(path).first_or_octet_stream()
 }
 
-/// Guess the MIME type of `path` by its extension (as defined by `Path::extension()`).
+/// Infer the MIME type of `path` by its extension (as defined by `Path::extension()`).
 ///
 /// If `path` has no extension, or its extension has no known MIME type mapping,
 /// then `None` is returned.
 ///
 #[deprecated(since = "2.0.0", note = "Use `from_path(path).first()` instead")]
-pub fn guess_mime_type_opt<P: AsRef<Path>>(path: P) -> Option<Mime> {
+pub fn infer_mime_type_opt<P: AsRef<Path>>(path: P) -> Option<Mime> {
     from_path(path).first()
 }
 
-/// Guess the MIME type string of `path` by its extension (as defined by `Path::extension()`).
+/// Infer the MIME type string of `path` by its extension (as defined by `Path::extension()`).
 ///
 /// If `path` has no extension, or its extension has no known MIME type mapping,
 /// then `None` is returned.
 ///
 /// ## Note
-/// **Guess** is the operative word here, as there are no guarantees that the contents of the file
+/// **Infer** is the operative word here, as there are no guarantees that the contents of the file
 /// that `path` points to match the MIME type associated with the path's extension.
 ///
 /// Take care when processing files with assumptions based on the return value of this function.
@@ -443,13 +443,13 @@ mod tests {
     fn check_type_bounds() {
         fn assert_type_bounds<T: Clone + Debug + Send + Sync + 'static>() {}
 
-        assert_type_bounds::<super::MimeGuess>();
+        assert_type_bounds::<super::MimeInfer>();
         assert_type_bounds::<super::Iter>();
         assert_type_bounds::<super::IterRaw>();
     }
 
     #[test]
-    fn test_mime_type_guessing() {
+    fn test_mime_type_infering() {
         assert_eq!(
             from_ext("gif").first_or_octet_stream().to_string(),
             "image/gif".to_string()
@@ -478,7 +478,7 @@ mod tests {
     }
 
     #[test]
-    fn test_mime_type_guessing_opt() {
+    fn test_mime_type_infering_opt() {
         assert_eq!(
             from_ext("gif").first().unwrap().to_string(),
             "image/gif".to_string()
