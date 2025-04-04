@@ -3,6 +3,8 @@
 MIME/MediaType guessing by file extension. 
 Uses a static map of known file extension -> MIME type mappings.
 
+> `mime_guess2` is a fork of `mime_guess` (https://github.com/abonander/mime_guess), as `mime_guess` is not actively maintained.
+
 **Returning Contributors: New Requirements for Submissions Below**
 
 ##### Required Rust Version: 1.85.1
