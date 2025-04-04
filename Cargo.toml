@@ -12,7 +12,6 @@ readme = "README.md"
 
 [features]
 default = ["rev-mappings"]
-# TODO: fix phf-map feature
 phf-map = ["phf", "phf_codegen"]
 
 # generate reverse-mappings for lookup of extensions by MIME type

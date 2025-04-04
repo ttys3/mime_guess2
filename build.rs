@@ -17,9 +17,6 @@ use mime_types::MIME_TYPES;
 #[path = "src/mime_types.rs"]
 mod mime_types;
 
-#[cfg(feature = "phf")]
-const PHF_PATH: &str = "::impl_::phf";
-
 fn main() {
     let out_dir = env::var("OUT_DIR").unwrap();
     let dest_path = Path::new(&out_dir).join("mime_types_generated.rs");
@@ -43,7 +40,6 @@ fn build_forward_map<W: Write>(out: &mut W) {
     use phf_codegen::Map as PhfMap;
 
     let mut forward_map = PhfMap::new();
-    forward_map.phf_path(PHF_PATH);
 
     let mut map_entries: Vec<(&str, Vec<&str>)> = Vec::new();
 
@@ -82,7 +78,6 @@ fn build_rev_map<W: Write>(out: &mut W) {
     let dyn_map = get_rev_mappings();
 
     let mut rev_map = PhfMap::new();
-    rev_map.phf_path(PHF_PATH);
 
     let mut exts = Vec::new();
 
@@ -90,7 +85,6 @@ fn build_rev_map<W: Write>(out: &mut W) {
         let top_start = exts.len();
 
         let mut sub_map = PhfMap::new();
-        sub_map.phf_path(PHF_PATH);
 
         for (sub, sub_exts) in subs {
             let sub_start = exts.len();
