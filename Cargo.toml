@@ -37,7 +37,7 @@ version = "0.11"
 optional = true
 
 [dev-dependencies]
-criterion = "0.5"
+divan = "0.1.17"
 
 [[example]]
 name = "rev_map"
