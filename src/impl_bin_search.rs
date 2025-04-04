@@ -3,7 +3,7 @@ use unicase::UniCase;
 include!("mime_types.rs");
 include!(env!("MIME_TYPES_GENERATED_PATH"));
 
-#[cfg(feature = "rev-mappings")]
+#[cfg(feature = "rev-map")]
 #[derive(Copy, Clone)]
 struct TopLevelExts {
     start: usize,
@@ -17,7 +17,7 @@ pub fn get_mime_types(ext: &str) -> Option<&'static [&'static str]> {
     map_lookup(MIME_TYPES, &ext)
 }
 
-#[cfg(feature = "rev-mappings")]
+#[cfg(feature = "rev-map")]
 pub fn get_extensions(toplevel: &str, sublevel: &str) -> Option<&'static [&'static str]> {
     if toplevel == "*" {
         return Some(EXTS);

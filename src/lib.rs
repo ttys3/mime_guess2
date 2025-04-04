@@ -374,7 +374,7 @@ pub fn get_mime_type_str(search_ext: &str) -> Option<&'static str> {
 /// If the top-level of the MIME type is a wildcard (`*`), returns all extensions.
 ///
 /// If the sub-level of the MIME type is a wildcard, returns all extensions for the top-level.
-#[cfg(feature = "rev-mappings")]
+#[cfg(feature = "rev-map")]
 pub fn get_mime_extensions(mime: &Mime) -> Option<&'static [&'static str]> {
     get_extensions(mime.type_().as_ref(), mime.subtype().as_ref())
 }
@@ -392,7 +392,7 @@ pub fn get_mime_extensions(mime: &Mime) -> Option<&'static [&'static str]> {
 ///
 /// ### Panics
 /// If `mime_str` is not a valid MIME type specifier (naive).
-#[cfg(feature = "rev-mappings")]
+#[cfg(feature = "rev-map")]
 pub fn get_mime_extensions_str(mut mime_str: &str) -> Option<&'static [&'static str]> {
     mime_str = mime_str.trim();
 
@@ -417,7 +417,7 @@ pub fn get_mime_extensions_str(mut mime_str: &str) -> Option<&'static [&'static 
 /// If the top-level of the MIME type is a wildcard (`*`), returns all extensions.
 ///
 /// If the sub-level of the MIME type is a wildcard, returns all extensions for the top-level.
-#[cfg(feature = "rev-mappings")]
+#[cfg(feature = "rev-map")]
 pub fn get_extensions(toplevel: &str, sublevel: &str) -> Option<&'static [&'static str]> {
     impl_::get_extensions(toplevel, sublevel)
 }

@@ -30,7 +30,7 @@ fn main() {
     #[cfg(feature = "phf")]
     build_forward_map(&mut outfile);
 
-    #[cfg(feature = "rev-mappings")]
+    #[cfg(feature = "rev-map")]
     build_rev_map(&mut outfile);
 }
 
@@ -71,7 +71,7 @@ fn build_forward_map<W: Write>(out: &mut W) {
 }
 
 // Build reverse mappings (mime type -> ext)
-#[cfg(all(feature = "phf", feature = "rev-mappings"))]
+#[cfg(all(feature = "phf", feature = "rev-map"))]
 fn build_rev_map<W: Write>(out: &mut W) {
     use phf_codegen::Map as PhfMap;
 
@@ -114,7 +114,7 @@ fn build_rev_map<W: Write>(out: &mut W) {
     writeln!(out, "const EXTS: &'static [&'static str] = &{:?};", exts).unwrap();
 }
 
-#[cfg(all(not(feature = "phf"), feature = "rev-mappings"))]
+#[cfg(all(not(feature = "phf"), feature = "rev-map"))]
 fn build_rev_map<W: Write>(out: &mut W) {
     use std::fmt::Write as _;
 
@@ -166,7 +166,7 @@ fn build_rev_map<W: Write>(out: &mut W) {
     writeln!(out, "const EXTS: &'static [&'static str] = &{:?};", exts).unwrap();
 }
 
-#[cfg(feature = "rev-mappings")]
+#[cfg(feature = "rev-map")]
 fn get_rev_mappings(
 ) -> BTreeMap<UniCase<&'static str>, BTreeMap<UniCase<&'static str>, Vec<&'static str>>> {
     // First, collect all the mime type -> ext mappings)

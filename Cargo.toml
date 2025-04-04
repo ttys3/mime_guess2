@@ -11,12 +11,12 @@ documentation = "https://docs.rs/mime_guess2/"
 readme = "README.md"
 
 [features]
-default = ["rev-mappings"]
+default = ["rev-map"]
 phf-map = ["phf", "phf_codegen"]
 
 # generate reverse-mappings for lookup of extensions by MIME type
 # default-on but can be turned off for smaller generated code
-rev-mappings = []
+rev-map = []
 
 [dependencies]
 mime = "0.3"
@@ -41,7 +41,7 @@ criterion = "0.5"
 
 [[example]]
 name = "rev_map"
-required-features = ["rev-mappings"]
+required-features = ["rev-map"]
 
 [[bench]]
 name = "benchmark"
