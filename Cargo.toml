@@ -1,6 +1,6 @@
 [package]
 name = "mime_guess2"
-version = "2.1.0"
+version = "2.2.0"
 edition = "2024"
 authors = ["Austin Bonander <austin.bonander@gmail.com>"]
 license = "MIT"
