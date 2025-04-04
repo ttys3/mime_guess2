@@ -34,7 +34,10 @@ pub fn get_extensions(toplevel: &str, sublevel: &str) -> Option<&'static [&'stat
 }
 
 fn map_lookup<K, V>(map: &'static [(K, V)], key: &str) -> Option<V>
-    where K: Copy + Into<UniCase<&'static str>>, V: Copy {
+where
+    K: Copy + Into<UniCase<&'static str>>,
+    V: Copy,
+{
     map.binary_search_by_key(&UniCase::new(key), |(k, _)| (*k).into())
         .ok()
         .map(|i| map[i].1)
