@@ -1,34 +1,30 @@
 [package]
 
 name = "mime-infer"
-version = "3.0.0"
-authors = ["Austin Bonander <austin.bonander@gmail.com>"]
+version = "4.0.0"
+authors = ["Austin Bonander <austin.bonander@gmail.com>", "Chrislearn Young <chris@acroidea.com>"]
 license = "MIT"
 description = "A simple crate for detection of a file's MIME type by its extension."
 keywords = ["mime", "filesystem", "extension"]
+edition = "2024"
+rust-version = "1.85.0"
 repository = "https://github.com/salvo-rs/mime-infer"
 documentation = "https://docs.rs/mime-infer/"
 readme = "README.md"
 
 [features]
-default = ["rev-mappings"]
-# FIXME: when `phf` release 0.8.0 is ready
-# phf-map = ["phf", "phf_codegen"]
+default = ["rev-map"]
+phf-map = ["dep:phf", "dep:phf_codegen"]
 
 # generate reverse-mappings for lookup of extensions by MIME type
 # default-on but can be turned off for smaller generated code
-rev-mappings = []
+rev-map = []
 
 [dependencies]
 mime = "0.3"
-unicase = "2.7"
-
-#[dependencies.phf]
-## version = "0.7.24"
-## git = "https://github.com/sfackler/rust-phf"
-#path = "../rust-phf/phf"
-#features = ["unicase"]
-#optional = true
+unicase = "2.8"
+phf = { version = "0.11", optional = true, features = ["unicase"] }
+phf_codegen = { version = "0.11", optional = true }
 
 [build-dependencies]
 unicase = "2.7.0"
@@ -44,7 +40,7 @@ criterion = "0.5"
 
 [[example]]
 name = "rev_map"
-required-features = ["rev-mappings"]
+required-features = ["rev-map"]
 
 [[bench]]
 name = "benchmark"

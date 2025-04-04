@@ -29,11 +29,11 @@ use std::iter::FusedIterator;
 use std::path::Path;
 use std::{iter, slice};
 
-#[cfg(feature = "phf")]
+#[cfg(feature = "phf-map")]
 #[path = "impl_phf.rs"]
 mod impl_;
 
-#[cfg(not(feature = "phf"))]
+#[cfg(not(feature = "phf-map"))]
 #[path = "impl_bin_search.rs"]
 mod impl_;
 
@@ -65,7 +65,7 @@ impl MimeInfer {
             return MimeInfer(&[]);
         }
 
-        impl_::get_mime_types(ext).map_or(MimeInfer(&[]), |v| MimeInfer(v))
+        impl_::get_mime_types(ext).map_or(MimeInfer(&[]), MimeInfer)
     }
 
     /// Infer the MIME type of `path` by its extension (as defined by
@@ -111,7 +111,7 @@ impl MimeInfer {
     ///
     /// See [Note: Ordering](#note-ordering) above.
     pub fn first_raw(&self) -> Option<&'static str> {
-        self.0.get(0).cloned()
+        self.0.first().copied()
     }
 
     /// Get the first infered `Mime`, or if the infer is empty, return
@@ -186,7 +186,7 @@ impl IntoIterator for MimeInfer {
     }
 }
 
-impl<'a> IntoIterator for &'a MimeInfer {
+impl IntoIterator for &MimeInfer {
     type Item = Mime;
     type IntoIter = Iter;
 
@@ -374,7 +374,7 @@ pub fn get_mime_type_str(search_ext: &str) -> Option<&'static str> {
 /// If the top-level of the MIME type is a wildcard (`*`), returns all extensions.
 ///
 /// If the sub-level of the MIME type is a wildcard, returns all extensions for the top-level.
-#[cfg(feature = "rev-mappings")]
+#[cfg(feature = "rev-map")]
 pub fn get_mime_extensions(mime: &Mime) -> Option<&'static [&'static str]> {
     get_extensions(mime.type_().as_ref(), mime.subtype().as_ref())
 }
@@ -392,7 +392,7 @@ pub fn get_mime_extensions(mime: &Mime) -> Option<&'static [&'static str]> {
 ///
 /// ### Panics
 /// If `mime_str` is not a valid MIME type specifier (naive).
-#[cfg(feature = "rev-mappings")]
+#[cfg(feature = "rev-map")]
 pub fn get_mime_extensions_str(mut mime_str: &str) -> Option<&'static [&'static str]> {
     mime_str = mime_str.trim();
 
@@ -417,7 +417,7 @@ pub fn get_mime_extensions_str(mut mime_str: &str) -> Option<&'static [&'static 
 /// If the top-level of the MIME type is a wildcard (`*`), returns all extensions.
 ///
 /// If the sub-level of the MIME type is a wildcard, returns all extensions for the top-level.
-#[cfg(feature = "rev-mappings")]
+#[cfg(feature = "rev-map")]
 pub fn get_extensions(toplevel: &str, sublevel: &str) -> Option<&'static [&'static str]> {
     impl_::get_extensions(toplevel, sublevel)
 }
