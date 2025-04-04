@@ -126,11 +126,12 @@ fn build_rev_map<W: Write>(out: &mut W) {
 
     macro_rules! unicase_const {
         ($s:expr) => ({
-            format_args!("{}({:?})", (if $s.is_ascii() {
+            let prefix = if $s.is_ascii() {
                 "UniCase::ascii"
             } else {
                 "UniCase::unicode"
-            }), $s)
+            };
+            format!("{}({:?})", prefix, $s)
         })
     }
 
